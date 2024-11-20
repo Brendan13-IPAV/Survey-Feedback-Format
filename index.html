@@ -84,41 +84,41 @@
 
     <script>
         // Quiz content - EDIT THIS SECTION TO MODIFY QUESTIONS
-        const quizData = [
+const quizData = [
                   {
                 id: 1,
                 title: "What is your primary objective?",
-                description: "To help us prioritise actions which align with your needs, we would like to know what your aim is. Please select your MAIN aim, though multiple aims may be possible wiht many of the suggested actions.",
+                description: "To help us prioritise actions which align with your needs, we would like to know what your aim is. Please select your MAIN aim, noting that multiple aims may be achieved (to varying degrees) by pursuing suggested actions.",
                 type: "radio", // single choice
                 options: [
                     {
                         id: "compensation",
                         text: "Obtain financial compensation for infringement.",
-                        feedback: "Making this choice will prioritise formal proceedings which can lead to financal compensation, and will deprioritise faster and cheaper solutions."
+                        feedback: "Making this choice will prioritise formal proceedings which can lead to financial compensation, and will deprioritise faster and cheaper solutions."
                         //It can be quite expensive and slow to obtain compensation, be clear that this is imperative to resolving your situation.
                     },
                     {
-                        id: "stop infringment",
+                        id: "stop infringement",
                         text: "Prevent further infringement.",
-                        feedback: "Making this choice will not remove any options, but will prioritise actions which most effectivly (cheaply and quickly) reduce future infringment."
+                        feedback: "Making this choice will not reduce the number of options but will prioritise actions which most effectively (cheaply and quickly) reduce future infringement."
                     },
                     {
                         id: "respond",
                         text: "Respond to claims of infringement and continue to operate",
-                        feedback: "Making this choice will prioritise de-escilating actions which help clarify and resolve issues involving rights."
+                        feedback: "Making this choice will prioritise deescalating actions which help clarify and resolve issues involving rights."
                     }
                         ]
                 },
                       {
                 id: 2,
                 title: "Which country is the IP registered in?",
-                description: "IP exisits golablaly, but is made up of a patchwork of cooperating systems. Some actions are only available with rights registered in particualar jurisitions. Select all options which apply.",
+                description: "IP exists globally, but is made up of a patchwork of cooperating systems. Some actions are only available with rights registered in particular jurisdictions. Select all options which apply.",
                 type: "checkbox", // multiple choice
                 options: [
                     {
                         id: "AustIP",
                         text: "Registered with IP Australia (or pending registration with IP Australia)",
-                        feedback: "Making this choice has prioritised actions which can be applied within Austalia. There are 15 remaining options to consider."
+                        feedback: "Making this choice has prioritised actions which can be applied within Australia. There are 15 remaining options to consider."
                     },
                     {
                         id: "InternationIP",
@@ -128,14 +128,14 @@
                     {
                         id: "NoRegisteredIP",
                         text: "The IP is not formally registered.",
-                        feedback: "There are commonlaw rights for IP in some situations, but with no registered IP 9 possible options have been removed, there are 6 remaining options to consider."
+                        feedback: "There are Common Law rights for IP in some situations, but with no registered IP rights, 9 possible options are not available to consider. There are 6 remaining options to consider."
                     }
                     ]
                     },
                     {
                 id: 3,
                 title: "Do you contest the validity of the intellectual property right in question?",
-                description: "Validity refers to whether the IP right was granted correctly and is legally enforceable. This could relate to patents, trademarks, copyrights, or other forms of IP protection. Some disputes are about both the validity of a right, and infringment on a right.",
+                description: "Validity refers to whether the IP right was granted correctly and is legally enforceable. This could relate to patents, trademarks, copyrights, or other forms of IP protection. Some disputes are about both the validity of a right, and infringement on a right.",
                 type: "radio", // single choice
                 options: [
                     {
@@ -146,14 +146,14 @@
                     {
                         id: "No",
                         text: "No, validity is not at issue",
-                        feedback: "3 possible options have been ruled out beased on this information; there are 16 remaining options you could decide to persue."
+                        feedback: "3 possible options have been ruled out based on this information; there are 16 remaining options you could decide to pursue."
                     }
                 ]
             },
             {
                 id: 4,
-                title: "Have you identified any IP related issues from someone selling on an online marketplace? (eg Amazon, Etsy, Facebook)",
-                description: "Some online marketplaces have ways to allert them to infirngment happening on their platform, which can be used in conjunction with other inforcement strategies.",
+                title: "Have you identified any IP related issues from someone selling on an online marketplace? (e.g. Amazon, Etsy, Facebook)",
+                description: "Some online marketplaces have ways to alert them to infringement happening on their platform, which can be used in conjunction with other enforcement strategies.",
                 type: "radio", // single choice
                 options: [
                     {
@@ -164,14 +164,15 @@
                     {
                         id: "No",
                         text: "No",
-                        feedback: "1 possible option has been ruled out based on this information; there are 15 remaining options you could decide to persue."
+                        feedback: "1 possible option has been ruled out based on this information; there are 15 remaining options you could decide to pursue."
                     }
                     ]
-            },
+            }
 
    
             // Add more questions here following the same format
         ];
+
 
         // Generate quiz HTML
         function generateQuiz() {
