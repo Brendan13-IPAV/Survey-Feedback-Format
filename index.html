@@ -80,63 +80,116 @@
     </style>
 </head>
 <body>
-    <div id="quiz-container">
-        <!-- Question 1 -->
-        <div class="question-container active" data-question="1">
-            <div class="question-title">What is your preferred learning style?</div>
-            <div class="question-description">Understanding your learning style helps optimize your educational experience.</div>
-            <div class="options-container">
-                <div class="option">
-                    <input type="radio" name="q1" value="visual" id="q1-1">
-                    <label for="q1-1">Visual (images and diagrams)</label>
-                </div>
-                <div class="option">
-                    <input type="radio" name="q1" value="auditory" id="q1-2">
-                    <label for="q1-2">Auditory (listening and discussing)</label>
-                </div>
-                <div class="option">
-                    <input type="radio" name="q1" value="kinesthetic" id="q1-3">
-                    <label for="q1-3">Kinesthetic (hands-on practice)</label>
-                </div>
-            </div>
-            <div class="feedback" data-feedback="visual">Visual learners often benefit from mind maps and visual study materials.</div>
-            <div class="feedback" data-feedback="auditory">Auditory learners excel with recorded lectures and group discussions.</div>
-            <div class="feedback" data-feedback="kinesthetic">Hands-on learners thrive with practical exercises and real-world applications.</div>
-        </div>
-
-        <!-- Question 2 -->
-        <div class="question-container" data-question="2">
-            <div class="question-title">Which technology areas interest you most?</div>
-            <div class="question-description">Select all that apply to help us understand your tech preferences.</div>
-            <div class="options-container">
-                <div class="option">
-                    <input type="checkbox" name="q2" value="ai" id="q2-1">
-                    <label for="q2-1">Artificial Intelligence & Machine Learning</label>
-                </div>
-                <div class="option">
-                    <input type="checkbox" name="q2" value="web" id="q2-2">
-                    <label for="q2-2">Web Development</label>
-                </div>
-                <div class="option">
-                    <input type="checkbox" name="q2" value="mobile" id="q2-3">
-                    <label for="q2-3">Mobile App Development</label>
-                </div>
-            </div>
-            <div class="feedback" data-feedback="ai">AI and ML are rapidly growing fields with extensive career opportunities.</div>
-            <div class="feedback" data-feedback="web">Web development skills are in high demand across industries.</div>
-            <div class="feedback" data-feedback="mobile">Mobile development is crucial in today's app-driven world.</div>
-        </div>
-
-        <!-- Add more questions following the same pattern -->
-
-        <div class="navigation">
-            <button class="prev-btn" disabled>Previous</button>
-            <button class="submit-btn">Submit</button>
-        </div>
-    </div>
+    <div id="quiz-container"></div>
 
     <script>
+        // Quiz content - EDIT THIS SECTION TO MODIFY QUESTIONS
+        const quizData = [
+            {
+                id: 1,
+                title: "Do you contest the validity of the intellectual property right in question?",
+                description: "Validity refers to whether the IP right was granted correctly and is legally enforceable. This could relate to patents, trademarks, copyrights, or other forms of IP protection. Some disputes are about both the validity of a right, and infringment on a right.",
+                type: "radio", // single choice
+                options: [
+                    {
+                        id: "Yes",
+                        text: "Yes, I believe the right should not be granted.",
+                        feedback: "We will ask further questions about the reasons you have for disputing the validity of a right."
+                    },
+                    {
+                        id: "No",
+                        text: "No, validity is not at issue",
+                        feedback: "3 possible options have been ruled out beased on this information; there are 16 remaining options you could decide to persue."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Have you identified any IP related issues from someone selling on an online marketplace? (eg Amazon, Etsy, Facebook)",
+                description: "Some online marketplaces have ways to allert them to infirngment happening ont heir platform, which can be used in conjunction with other inforcement strategies.",
+                type: "radio", // multiple choice
+                options: [
+                    {
+                        id: "yes",
+                        text: "Yes",
+                        feedback: "The suggestions will include 'take-down' requests on private platforms for oyu to consider."
+                    },
+                    {
+                        id: "No",
+                        text: "No",
+                        feedback: "1 possible option has been ruled out beased on this information; there are 15 remaining options you could decide to persue."
+                    },
+                    {
+                        id: "mobile",
+                        text: "Mobile App Development",
+                        feedback: "Mobile development is crucial in today's app-driven world."
+                    },
+                     {
+                id: 3,
+                title: "Have you identified any IP related issues from someone selling on an online marketplace? (eg Amazon, Etsy, Facebook)",
+                description: "Some online marketplaces have ways to allert them to infirngment happening ont heir platform, which can be use din conjunction with other inforcement strategies.",
+                type: "checkbox", // multiple choice
+                options: [
+                    {
+                        id: "ai",
+                        text: "Artificial Intelligence & Machine Learning",
+                        feedback: "AI and ML are rapidly growing fields with extensive career opportunities."
+                    },
+                    {
+                        id: "web",
+                        text: "Web Development",
+                        feedback: "Web development skills are in high demand across industries."
+                    },
+                    {
+                        id: "mobile",
+                        text: "Mobile App Development",
+                        feedback: "Mobile development is crucial in today's app-driven world."
+                    }
+                    
+                ]
+            },
+            // Add more questions here following the same format
+        ];
+
+        // Generate quiz HTML
+        function generateQuiz() {
+            const container = document.getElementById('quiz-container');
+            
+            // Generate questions
+            quizData.forEach((question, index) => {
+                const questionHTML = `
+                    <div class="question-container ${index === 0 ? 'active' : ''}" data-question="${question.id}">
+                        <div class="question-title">${question.title}</div>
+                        <div class="question-description">${question.description}</div>
+                        <div class="options-container">
+                            ${question.options.map(option => `
+                                <div class="option">
+                                    <input type="${question.type}" name="q${question.id}" value="${option.id}" id="q${question.id}-${option.id}">
+                                    <label for="q${question.id}-${option.id}">${option.text}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${question.options.map(option => `
+                            <div class="feedback" data-feedback="${option.id}">${option.feedback}</div>
+                        `).join('')}
+                    </div>
+                `;
+                container.innerHTML += questionHTML;
+            });
+
+            // Add navigation buttons
+            container.innerHTML += `
+                <div class="navigation">
+                    <button class="prev-btn" disabled>Previous</button>
+                    <button class="submit-btn">Submit</button>
+                </div>
+            `;
+        }
+
+        // Initialize quiz
         document.addEventListener('DOMContentLoaded', function() {
+            generateQuiz();
+            
             const containers = document.querySelectorAll('.question-container');
             const prevBtn = document.querySelector('.prev-btn');
             const submitBtn = document.querySelector('.submit-btn');
