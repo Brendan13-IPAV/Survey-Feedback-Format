@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .question-container {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .question-container.active {
+            display: block;
+        }
+        .question-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .question-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        .options-container {
+            margin-bottom: 15px;
+        }
+        .option {
+            margin: 10px 0;
+        }
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background: #f8f9fa;
+            display: none;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .prev-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        .next-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .submit-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .answered .submit-btn {
+            background-color: #007bff;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <!-- Question 1 -->
+        <div class="question-container active" data-question="1">
+            <div class="question-title">What is your preferred learning style?</div>
+            <div class="question-description">Understanding your learning style helps optimize your educational experience.</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" name="q1" value="visual" id="q1-1">
+                    <label for="q1-1">Visual (images and diagrams)</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q1" value="auditory" id="q1-2">
+                    <label for="q1-2">Auditory (listening and discussing)</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q1" value="kinesthetic" id="q1-3">
+                    <label for="q1-3">Kinesthetic (hands-on practice)</label>
+                </div>
+            </div>
+            <div class="feedback" data-feedback="visual">Visual learners often benefit from mind maps and visual study materials.</div>
+            <div class="feedback" data-feedback="auditory">Auditory learners excel with recorded lectures and group discussions.</div>
+            <div class="feedback" data-feedback="kinesthetic">Hands-on learners thrive with practical exercises and real-world applications.</div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-container" data-question="2">
+            <div class="question-title">Which technology areas interest you most?</div>
+            <div class="question-description">Select all that apply to help us understand your tech preferences.</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="checkbox" name="q2" value="ai" id="q2-1">
+                    <label for="q2-1">Artificial Intelligence & Machine Learning</label>
+                </div>
+                <div class="option">
+                    <input type="checkbox" name="q2" value="web" id="q2-2">
+                    <label for="q2-2">Web Development</label>
+                </div>
+                <div class="option">
+                    <input type="checkbox" name="q2" value="mobile" id="q2-3">
+                    <label for="q2-3">Mobile App Development</label>
+                </div>
+            </div>
+            <div class="feedback" data-feedback="ai">AI and ML are rapidly growing fields with extensive career opportunities.</div>
+            <div class="feedback" data-feedback="web">Web development skills are in high demand across industries.</div>
+            <div class="feedback" data-feedback="mobile">Mobile development is crucial in today's app-driven world.</div>
+        </div>
+
+        <!-- Add more questions following the same pattern -->
+
+        <div class="navigation">
+            <button class="prev-btn" disabled>Previous</button>
+            <button class="submit-btn">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const containers = document.querySelectorAll('.question-container');
+            const prevBtn = document.querySelector('.prev-btn');
+            const submitBtn = document.querySelector('.submit-btn');
+            let currentQuestion = 1;
+
+            function showQuestion(questionNumber) {
+                containers.forEach(container => {
+                    container.classList.remove('active');
+                    if (container.dataset.question == questionNumber) {
+                        container.classList.add('active');
+                    }
+                });
+                
+                prevBtn.disabled = questionNumber === 1;
+                currentQuestion = questionNumber;
+            }
+
+            function updateFeedback(container) {
+                const feedbacks = container.querySelectorAll('.feedback');
+                feedbacks.forEach(feedback => feedback.style.display = 'none');
+
+                const inputs = container.querySelectorAll('input:checked');
+                inputs.forEach(input => {
+                    const feedbackElement = container.querySelector(`.feedback[data-feedback="${input.value}"]`);
+                    if (feedbackElement) {
+                        feedbackElement.style.display = 'block';
+                    }
+                });
+            }
+
+            // Handle input changes
+            document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    const container = this.closest('.question-container');
+                    updateFeedback(container);
+                    container.classList.add('answered');
+                });
+            });
+
+            // Navigation buttons
+            prevBtn.addEventListener('click', () => {
+                if (currentQuestion > 1) {
+                    showQuestion(currentQuestion - 1);
+                }
+            });
+
+            submitBtn.addEventListener('click', function() {
+                const currentContainer = document.querySelector(`.question-container[data-question="${currentQuestion}"]`);
+                const isAnswered = currentContainer.querySelector('input:checked');
+                
+                if (isAnswered) {
+                    if (submitBtn.textContent === 'Submit') {
+                        submitBtn.textContent = 'Next';
+                        submitBtn.classList.add('next-btn');
+                        submitBtn.classList.remove('submit-btn');
+                    } else {
+                        if (currentQuestion < containers.length) {
+                            showQuestion(currentQuestion + 1);
+                            submitBtn.textContent = 'Submit';
+                            submitBtn.classList.remove('next-btn');
+                            submitBtn.classList.add('submit-btn');
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
