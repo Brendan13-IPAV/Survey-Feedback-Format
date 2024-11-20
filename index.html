@@ -146,7 +146,7 @@ const quizData = [
                     {
                         id: "No",
                         text: "No, validity is not at issue",
-                        feedback: "3 possible options have been ruled out based on this information; there are 16 remaining options you could decide to pursue."
+                        feedback: "By choosing this, 3 possible options have been ruled out based on this information; there are 16 remaining options you could decide to pursue."
                     }
                 ]
             },
@@ -167,9 +167,27 @@ const quizData = [
                         feedback: "1 possible option has been ruled out based on this information; there are 15 remaining options you could decide to pursue."
                     }
                     ]
+            },
+            {
+                id: 5,
+                title: "Would you require confidentiality when resolving this issue?",
+                description: "Businesses sometimes need to keep certain actions confidential to protect intellectual property, maintain a competitive advantage, or manage public perception effectively. This can involve safeguarding trade secrets, pending patents, or sensitive business information that, if prematurely disclosed, could harm the company's interests.",
+                type: "radio", // single choice
+                options: [
+                    {
+                        id: "Yes",
+                        text: "Yes",
+                        feedback: "By requiring confidentiality, a number of possible options will be deprioritised as their processes are public and could reveal confidential information."
+                    },
+                    {
+                        id: "No",
+                        text: "No",
+                        feedback: "By selecting this option, a wide number of possible actions can be considered."
+                    }
+                    ]
             }
 
-   
+
             // Add more questions here following the same format
         ];
 
