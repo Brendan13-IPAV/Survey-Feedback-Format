@@ -85,44 +85,8 @@
     <script>
         // Quiz content - EDIT THIS SECTION TO MODIFY QUESTIONS
         const quizData = [
-            {
+                  {
                 id: 1,
-                title: "Do you contest the validity of the intellectual property right in question?",
-                description: "Validity refers to whether the IP right was granted correctly and is legally enforceable. This could relate to patents, trademarks, copyrights, or other forms of IP protection. Some disputes are about both the validity of a right, and infringment on a right.",
-                type: "radio", // single choice
-                options: [
-                    {
-                        id: "Yes",
-                        text: "Yes, I believe the right should not be granted.",
-                        feedback: "We will ask further questions about the reasons you have for disputing the validity of a right."
-                    },
-                    {
-                        id: "No",
-                        text: "No, validity is not at issue",
-                        feedback: "3 possible options have been ruled out beased on this information; there are 16 remaining options you could decide to persue."
-                    }
-                ]
-            },
-            {
-                id: 2,
-                title: "Have you identified any IP related issues from someone selling on an online marketplace? (eg Amazon, Etsy, Facebook)",
-                description: "Some online marketplaces have ways to allert them to infirngment happening on their platform, which can be used in conjunction with other inforcement strategies.",
-                type: "radio", // single choice
-                options: [
-                    {
-                        id: "Yes",
-                        text: "Yes",
-                        feedback: "The suggestions will include 'take-down' requests on private platforms for you to consider."
-                    },
-                    {
-                        id: "No",
-                        text: "No",
-                        feedback: "1 possible option has been ruled out based on this information; there are 15 remaining options you could decide to persue."
-                    }
-                    ]
-            },
-            {
-                id: 3,
                 title: "What is your primary objective?",
                 description: "To help us prioritise actions which align with your needs, we would like to know what your aim is. Please select your MAIN aim, though multiple aims may be possible wiht many of the suggested actions.",
                 type: "radio", // single choice
@@ -146,7 +110,7 @@
                         ]
                 },
                       {
-                id: 4,
+                id: 2,
                 title: "Which country is the IP registered in?",
                 description: "IP exisits golablaly, but is made up of a patchwork of cooperating systems. Some actions are only available with rights registered in particualar jurisitions. Select all options which apply.",
                 type: "checkbox", // multiple choice
@@ -166,9 +130,46 @@
                         text: "The IP is not formally registered.",
                         feedback: "There are commonlaw rights for IP in some situations, but with no registered IP 9 possible options have been removed, there are 6 remaining options to consider."
                     }
-                    
+                    ]
+                    },
+                    {
+                id: 3,
+                title: "Do you contest the validity of the intellectual property right in question?",
+                description: "Validity refers to whether the IP right was granted correctly and is legally enforceable. This could relate to patents, trademarks, copyrights, or other forms of IP protection. Some disputes are about both the validity of a right, and infringment on a right.",
+                type: "radio", // single choice
+                options: [
+                    {
+                        id: "Yes",
+                        text: "Yes, I believe the right should not be granted.",
+                        feedback: "We will ask further questions about the reasons you have for disputing the validity of a right."
+                    },
+                    {
+                        id: "No",
+                        text: "No, validity is not at issue",
+                        feedback: "3 possible options have been ruled out beased on this information; there are 16 remaining options you could decide to persue."
+                    }
                 ]
-            }
+            },
+            {
+                id: 4,
+                title: "Have you identified any IP related issues from someone selling on an online marketplace? (eg Amazon, Etsy, Facebook)",
+                description: "Some online marketplaces have ways to allert them to infirngment happening on their platform, which can be used in conjunction with other inforcement strategies.",
+                type: "radio", // single choice
+                options: [
+                    {
+                        id: "Yes",
+                        text: "Yes",
+                        feedback: "The suggestions will include 'take-down' requests on private platforms for you to consider."
+                    },
+                    {
+                        id: "No",
+                        text: "No",
+                        feedback: "1 possible option has been ruled out based on this information; there are 15 remaining options you could decide to persue."
+                    }
+                    ]
+            },
+
+   
             // Add more questions here following the same format
         ];
 
