@@ -106,48 +106,69 @@
             {
                 id: 2,
                 title: "Have you identified any IP related issues from someone selling on an online marketplace? (eg Amazon, Etsy, Facebook)",
-                description: "Some online marketplaces have ways to allert them to infirngment happening ont heir platform, which can be used in conjunction with other inforcement strategies.",
-                type: "radio", // multiple choice
+                description: "Some online marketplaces have ways to allert them to infirngment happening on their platform, which can be used in conjunction with other inforcement strategies.",
+                type: "radio", // single choice
                 options: [
                     {
-                        id: "yes",
+                        id: "Yes",
                         text: "Yes",
-                        feedback: "The suggestions will include 'take-down' requests on private platforms for oyu to consider."
+                        feedback: "The suggestions will include 'take-down' requests on private platforms for you to consider."
                     },
                     {
                         id: "No",
                         text: "No",
-                        feedback: "1 possible option has been ruled out beased on this information; there are 15 remaining options you could decide to persue."
+                        feedback: "1 possible option has been ruled out based on this information; there are 15 remaining options you could decide to persue."
+                    }
+                    ]
+            },
+            {
+                id: 3,
+                title: "What is your primary objective?",
+                description: "To help us prioritise actions which align with your needs, we would like to know what your aim is. Please select your MAIN aim, though multiple aims may be possible wiht many of the suggested actions.",
+                type: "radio", // single choice
+                options: [
+                    {
+                        id: "compensation",
+                        text: "Obtain financial compensation for infringement.",
+                        feedback: "Making this choice will prioritise formal proceedings which can lead to financal compensation, and will deprioritise faster and cheaper solutions."
+                        //It can be quite expensive and slow to obtain compensation, be clear that this is imperative to resolving your situation.
                     },
                     {
-                        id: "mobile",
-                        text: "Mobile App Development",
-                        feedback: "Mobile development is crucial in today's app-driven world."
+                        id: "stop infringment",
+                        text: "Prevent further infringement.",
+                        feedback: "Making this choice will not remove any options, but will prioritise actions which most effectivly (cheaply and quickly) reduce future infringment."
                     },
-                     {
+                    {
+                        id: "respond",
+                        text: "Respond to claims of infringement and continue to operate",
+                        feedback: "Making this choice will prioritise de-escilating actions which help clarify and resolve issues involving rights."
+                    }
+                        ]
+                },
+                      {
                 id: 3,
-                title: "Have you identified any IP related issues from someone selling on an online marketplace? (eg Amazon, Etsy, Facebook)",
-                description: "Some online marketplaces have ways to allert them to infirngment happening ont heir platform, which can be use din conjunction with other inforcement strategies.",
+                title: "Which country is the IP registered in?",
+                description: "IP exisits golablaly, but is made up of a patchwork of cooperating systems. Some actions are only available with rights registered in particualar jurisitions. Select all options which apply.",
                 type: "checkbox", // multiple choice
                 options: [
                     {
-                        id: "ai",
-                        text: "Artificial Intelligence & Machine Learning",
-                        feedback: "AI and ML are rapidly growing fields with extensive career opportunities."
+                        id: "AustIP",
+                        text: "Registered with IP Australia (or pending registration with IP Australia)",
+                        feedback: "Making this choice has prioritised actions which can be applied within Austalia. There are 15 remaining options to consider."
                     },
                     {
-                        id: "web",
-                        text: "Web Development",
-                        feedback: "Web development skills are in high demand across industries."
+                        id: "InternationIP",
+                        text: "Registered with foreign IP offices (or pending registration) (e.g., US patents, EU trademarks)",
+                        feedback: "3 possible options have been ruled out as they require the Ip to be registered in Australia; there are 12 remaining options to consider."
                     },
                     {
-                        id: "mobile",
-                        text: "Mobile App Development",
-                        feedback: "Mobile development is crucial in today's app-driven world."
+                        id: "NoRegisteredIP",
+                        text: "The IP is not formally registered.",
+                        feedback: "There are commonlaw rights for IP in some situations, but with no registered IP 9 possible options have been removed, there are 6 remaining options to consider."
                     }
                     
                 ]
-            },
+            }
             // Add more questions here following the same format
         ];
 
