@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Quiz</title>
     <style>
-        /* Previous styles remain the same */
+        /* All previous styles remain the same */
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
@@ -92,7 +92,6 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
-        /* New style for options counter */
         .options-counter {
             background: #f8f9fa;
             padding: 10px;
@@ -107,13 +106,11 @@
     <div id="intro-container" class="intro-container">
         <h1>Welcome to the Interactive Quiz</h1>
         <p>This quiz will help guide you through some important questions to determine the best actions for your needs.</p>
-        <!-- Added options counter to intro container -->
         <div id="intro-options-counter" class="options-counter">There are 20 remaining options.</div>
         <button id="start-btn" class="next-btn">Start</button>
     </div>
 
     <div id="quiz-container" style="display:none;">
-        <!-- Added options counter to quiz container -->
         <div id="quiz-options-counter" class="options-counter">There are 20 remaining options.</div>
         <div class="progress-bar">
             <div id="progress-bar-inner" class="progress-bar-inner"></div>
@@ -121,20 +118,26 @@
     </div>
 
     <script>
-        // Variables for tracking options remaining and options excluded
-        let optionsRemaining = 20;
-        let optionsExcluded = 0;
+        // Initialize array of 20 options (all true)
+        let optionsArray = new Array(20).fill(true);
+        let pendingChanges = null; // Store pending changes until Next is clicked
+
+        // Function to count remaining options
+        function countRemainingOptions() {
+            return optionsArray.filter(option => option).length;
+        }
 
         // Function to update options counter display
         function updateOptionsCounter() {
+            const remainingOptions = countRemainingOptions();
+            const counterText = `There are ${remainingOptions} remaining options.`;
             const introCounter = document.getElementById('intro-options-counter');
             const quizCounter = document.getElementById('quiz-options-counter');
-            const counterText = `There are ${optionsRemaining} remaining options.`;
             if (introCounter) introCounter.textContent = counterText;
             if (quizCounter) quizCounter.textContent = counterText;
         }
 
-        // Quiz content - EDIT THIS SECTION TO MODIFY QUESTIONS
+        // Quiz content
         const quizData = [
             {
                 id: 1,
@@ -147,8 +150,8 @@
                         text: "Obtain financial compensation for infringement.",
                         feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
                         action: function() { 
-                            optionsRemaining -= 3; 
-                            updateOptionsCounter(); // Added update call
+                            // Store which options to disable (indexes 0, 1, 2 for example)
+                            pendingChanges = [0, 1, 2];
                         }
                     },
                     {
@@ -156,7 +159,7 @@
                         text: "Prevent further infringement.",
                         feedback: "No reduction of options, prioritizes effective prevention.",
                         action: function() { 
-                            updateOptionsCounter(); // Added update call
+                            pendingChanges = null; // No changes needed
                         }
                     }
                 ]
@@ -190,7 +193,6 @@
                 container.innerHTML += questionHTML;
             });
 
-            // Add navigation buttons
             container.innerHTML += `
                 <div class="navigation">
                     <button class="prev-btn" disabled>Previous</button>
@@ -206,7 +208,6 @@
             const startBtn = document.getElementById('start-btn');
             const progressBar = document.getElementById('progress-bar-inner');
             
-            // Initialize options counter
             updateOptionsCounter();
             
             startBtn.addEventListener('click', function() {
@@ -252,6 +253,15 @@
                     const selectedOption = currentContainer.querySelector('input:checked');
                     
                     if (selectedOption) {
+                        // Apply pending changes to optionsArray
+                        if (pendingChanges) {
+                            pendingChanges.forEach(index => {
+                                optionsArray[index] = false;
+                            });
+                            pendingChanges = null; // Reset pending changes
+                            updateOptionsCounter(); // Update the display
+                        }
+                        
                         if (currentQuestion < containers.length) {
                             showQuestion(currentQuestion + 1);
                         }
@@ -271,7 +281,7 @@
                             selectedFeedback.style.display = 'block';
                         }
 
-                        // Execute the action for the selected option
+                        // Queue up the action for when Next is clicked
                         const questionData = quizData.find(q => q.id === parseInt(container.dataset.question));
                         const selectedOptionData = questionData.options.find(opt => opt.id === this.value);
                         if (selectedOptionData && selectedOptionData.action) {
