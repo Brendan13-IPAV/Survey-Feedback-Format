@@ -119,7 +119,29 @@
         </div>
     </div>
 
-  // Quiz content
+ 
+
+    <script>
+        // Initialize array of 20 options (all true)
+        let optionsArray = new Array(20).fill(true);
+        let pendingChanges = null; // Store pending changes until Next is clicked
+
+        // Function to count remaining options
+        function countRemainingOptions() {
+            return optionsArray.filter(option => option).length;
+        }
+
+        // Function to update options counter display
+        function updateOptionsCounter() {
+            const remainingOptions = countRemainingOptions();
+            const counterText = `There are ${remainingOptions} remaining options.`;
+            const introCounter = document.getElementById('intro-options-counter');
+            const quizCounter = document.getElementById('quiz-options-counter');
+            if (introCounter) introCounter.textContent = counterText;
+            if (quizCounter) quizCounter.textContent = counterText;
+        }
+
+       // Quiz content
         const quizData = [
             {
                 id: 1,
@@ -173,28 +195,6 @@
             },
             // Add more questions here...
         ];
-
-    <script>
-        // Initialize array of 20 options (all true)
-        let optionsArray = new Array(20).fill(true);
-        let pendingChanges = null; // Store pending changes until Next is clicked
-
-        // Function to count remaining options
-        function countRemainingOptions() {
-            return optionsArray.filter(option => option).length;
-        }
-
-        // Function to update options counter display
-        function updateOptionsCounter() {
-            const remainingOptions = countRemainingOptions();
-            const counterText = `There are ${remainingOptions} remaining options.`;
-            const introCounter = document.getElementById('intro-options-counter');
-            const quizCounter = document.getElementById('quiz-options-counter');
-            if (introCounter) introCounter.textContent = counterText;
-            if (quizCounter) quizCounter.textContent = counterText;
-        }
-
-      
 
         // Generate quiz HTML
         function generateQuiz() {
