@@ -272,7 +272,7 @@
                 addFeedbackHandlers();
             });
 
-            function addNavigationHandlers() {
+ function addNavigationHandlers() {
     const containers = document.querySelectorAll('.question-container');
     const prevBtn = document.querySelector('.prev-btn');
     const nextBtn = document.querySelector('.next-btn');
@@ -281,14 +281,12 @@
     function showQuestion(questionNumber) {
         containers.forEach(container => {
             container.classList.remove('active');
-            // Convert both to numbers for comparison
             if (parseInt(container.dataset.question) === questionNumber) {
                 container.classList.add('active');
             }
         });
         
         prevBtn.disabled = questionNumber === 1;
-        nextBtn.disabled = questionNumber === containers.length;
         currentQuestion = questionNumber;
         updateProgressBar();
     }
@@ -305,25 +303,21 @@
     });
 
     nextBtn.addEventListener('click', () => {
-        const currentContainer = document.querySelector(`.question-container[data-question="${currentQuestion}"]`);
-        const selectedOption = currentContainer.querySelector('input:checked');
+        // Apply any pending changes if there are any
+        if (pendingChanges) {
+            pendingChanges.forEach(index => {
+                optionsArray[index] = false;
+            });
+            pendingChanges = null;
+            updateOptionsCounter();
+        }
         
-        if (selectedOption) {
-            // Apply pending changes to optionsArray
-            if (pendingChanges) {
-                pendingChanges.forEach(index => {
-                    optionsArray[index] = false;
-                });
-                pendingChanges = null; // Reset pending changes
-                updateOptionsCounter(); // Update the display
-            }
-            
-            if (currentQuestion < quizData.length) {
-                showQuestion(currentQuestion + 1);
-            }
+        // Simply move to next question if not at the end
+        if (currentQuestion < quizData.length) {
+            showQuestion(currentQuestion + 1);
         }
     });
-}
+};
 
             function addFeedbackHandlers() {
                 document.querySelectorAll('input[type="radio"]').forEach(input => {
