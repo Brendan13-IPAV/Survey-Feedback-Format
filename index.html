@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Quiz</title>
     <style>
+        /* Previous styles remain the same */
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
@@ -91,16 +92,29 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
+        /* New style for options counter */
+        .options-counter {
+            background: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #666;
+        }
     </style>
 </head>
 <body>
     <div id="intro-container" class="intro-container">
         <h1>Welcome to the Interactive Quiz</h1>
         <p>This quiz will help guide you through some important questions to determine the best actions for your needs.</p>
+        <!-- Added options counter to intro container -->
+        <div id="intro-options-counter" class="options-counter">There are 20 remaining options.</div>
         <button id="start-btn" class="next-btn">Start</button>
     </div>
 
     <div id="quiz-container" style="display:none;">
+        <!-- Added options counter to quiz container -->
+        <div id="quiz-options-counter" class="options-counter">There are 20 remaining options.</div>
         <div class="progress-bar">
             <div id="progress-bar-inner" class="progress-bar-inner"></div>
         </div>
@@ -110,6 +124,15 @@
         // Variables for tracking options remaining and options excluded
         let optionsRemaining = 20;
         let optionsExcluded = 0;
+
+        // Function to update options counter display
+        function updateOptionsCounter() {
+            const introCounter = document.getElementById('intro-options-counter');
+            const quizCounter = document.getElementById('quiz-options-counter');
+            const counterText = `There are ${optionsRemaining} remaining options.`;
+            if (introCounter) introCounter.textContent = counterText;
+            if (quizCounter) quizCounter.textContent = counterText;
+        }
 
         // Quiz content - EDIT THIS SECTION TO MODIFY QUESTIONS
         const quizData = [
@@ -123,13 +146,18 @@
                         id: "compensation",
                         text: "Obtain financial compensation for infringement.",
                         feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
-                        action: function() { optionsRemaining -= 3; }
+                        action: function() { 
+                            optionsRemaining -= 3; 
+                            updateOptionsCounter(); // Added update call
+                        }
                     },
                     {
                         id: "stop_infringement",
                         text: "Prevent further infringement.",
                         feedback: "No reduction of options, prioritizes effective prevention.",
-                        action: function() { }
+                        action: function() { 
+                            updateOptionsCounter(); // Added update call
+                        }
                     }
                 ]
             },
@@ -177,6 +205,9 @@
             const quizContainer = document.getElementById('quiz-container');
             const startBtn = document.getElementById('start-btn');
             const progressBar = document.getElementById('progress-bar-inner');
+            
+            // Initialize options counter
+            updateOptionsCounter();
             
             startBtn.addEventListener('click', function() {
                 introContainer.style.display = 'none';
@@ -238,6 +269,13 @@
                         const selectedFeedback = container.querySelector(`.feedback[data-feedback="${this.value}"]`);
                         if (selectedFeedback) {
                             selectedFeedback.style.display = 'block';
+                        }
+
+                        // Execute the action for the selected option
+                        const questionData = quizData.find(q => q.id === parseInt(container.dataset.question));
+                        const selectedOptionData = questionData.options.find(opt => opt.id === this.value);
+                        if (selectedOptionData && selectedOptionData.action) {
+                            selectedOptionData.action();
                         }
                     });
                 });
