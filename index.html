@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-
-  
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -119,29 +117,25 @@
         </div>
     </div>
 
- 
-
     <script>
-        // Initialize array of 20 options (all true)
+        // Initialize options array with 20 true values
         let optionsArray = new Array(20).fill(true);
-        let pendingChanges = null; // Store pending changes until Next is clicked
+        let pendingChanges = []; // Array to store indices that need to be changed
 
-        // Function to count remaining options
         function countRemainingOptions() {
-            return optionsArray.filter(option => option).length;
+            return optionsArray.filter(option => option === true).length;
         }
 
-        // Function to update options counter display
         function updateOptionsCounter() {
-            const remainingOptions = countRemainingOptions();
-            const counterText = `There are ${remainingOptions} remaining options.`;
+            const remaining = countRemainingOptions();
             const introCounter = document.getElementById('intro-options-counter');
             const quizCounter = document.getElementById('quiz-options-counter');
+            const counterText = `There are ${remaining} remaining options.`;
             if (introCounter) introCounter.textContent = counterText;
             if (quizCounter) quizCounter.textContent = counterText;
         }
 
-       // Quiz content
+        // Quiz content
         const quizData = [
             {
                 id: 1,
@@ -154,8 +148,8 @@
                         text: "Obtain financial compensation for infringement.",
                         feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
                         action: function() { 
-                            // Store which options to disable (indexes 0, 1, 2 for example)
-                            pendingChanges = [0, 1, 2];
+                            // Store indices to be changed when Next is clicked
+                            pendingChanges = [0, 1, 2]; // Example: will set first three options to false
                         }
                     },
                     {
@@ -163,39 +157,14 @@
                         text: "Prevent further infringement.",
                         feedback: "No reduction of options, prioritizes effective prevention.",
                         action: function() { 
-                            pendingChanges = null; // No changes needed
-                        }
-                    }
-                ]
-            },
-            {
-                id: 2,
-                title: "question 2",
-                description: "To help us prioritize actions which align with your needs, we would like to know what your aim is.",
-                type: "radio",
-                options: [
-                    {
-                        id: "compensation",
-                        text: "Obtain financial compensation for infringement.",
-                        feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
-                        action: function() { 
-                            // Store which options to disable (indexes 0, 1, 2 for example)
-                            pendingChanges = [0, 1, 2];
-                        }
-                    },
-                    {
-                        id: "stop_infringement",
-                        text: "Prevent further infringement.",
-                        feedback: "No reduction of options, prioritizes effective prevention.",
-                        action: function() { 
-                            pendingChanges = null; // No changes needed
+                            pendingChanges = []; // No changes needed
                         }
                     }
                 ]
             },
                       {
-                id: 3,
-                title: "Question 3?",
+                id: 2,
+                title: "What is your primary objective?",
                 description: "To help us prioritize actions which align with your needs, we would like to know what your aim is.",
                 type: "radio",
                 options: [
@@ -204,8 +173,8 @@
                         text: "Obtain financial compensation for infringement.",
                         feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
                         action: function() { 
-                            // Store which options to disable (indexes 0, 1, 2 for example)
-                            pendingChanges = [0, 1, 2];
+                            // Store indices to be changed when Next is clicked
+                            pendingChanges = [0, 1, 2]; // Example: will set first three options to false
                         }
                     },
                     {
@@ -213,7 +182,7 @@
                         text: "Prevent further infringement.",
                         feedback: "No reduction of options, prioritizes effective prevention.",
                         action: function() { 
-                            pendingChanges = null; // No changes needed
+                            pendingChanges = []; // No changes needed
                         }
                     }
                 ]
@@ -221,11 +190,9 @@
             // Add more questions here...
         ];
 
-        // Generate quiz HTML
         function generateQuiz() {
             const container = document.getElementById('quiz-container');
             
-            // Generate questions
             quizData.forEach((question, index) => {
                 const questionHTML = `
                     <div class="question-container ${index === 0 ? 'active' : ''}" data-question="${question.id}">
@@ -255,7 +222,6 @@
             `;
         }
 
-        // Initialize quiz
         document.addEventListener('DOMContentLoaded', function() {
             const introContainer = document.getElementById('intro-container');
             const quizContainer = document.getElementById('quiz-container');
@@ -272,52 +238,56 @@
                 addFeedbackHandlers();
             });
 
- function addNavigationHandlers() {
-    const containers = document.querySelectorAll('.question-container');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
-    let currentQuestion = 1;
+            function addNavigationHandlers() {
+                const containers = document.querySelectorAll('.question-container');
+                const prevBtn = document.querySelector('.prev-btn');
+                const nextBtn = document.querySelector('.next-btn');
+                let currentQuestion = 1;
 
-    function showQuestion(questionNumber) {
-        containers.forEach(container => {
-            container.classList.remove('active');
-            if (parseInt(container.dataset.question) === questionNumber) {
-                container.classList.add('active');
+                function showQuestion(questionNumber) {
+                    containers.forEach(container => {
+                        container.classList.remove('active');
+                        if (container.dataset.question == questionNumber) {
+                            container.classList.add('active');
+                        }
+                    });
+                    
+                    prevBtn.disabled = questionNumber === 1;
+                    currentQuestion = questionNumber;
+                    updateProgressBar();
+                }
+
+                function updateProgressBar() {
+                    const progressPercentage = (currentQuestion / quizData.length) * 100;
+                    progressBar.style.width = `${progressPercentage}%`;
+                }
+
+                prevBtn.addEventListener('click', () => {
+                    if (currentQuestion > 1) {
+                        showQuestion(currentQuestion - 1);
+                    }
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    const currentContainer = document.querySelector(`.question-container[data-question="${currentQuestion}"]`);
+                    const selectedOption = currentContainer.querySelector('input:checked');
+                    
+                    if (selectedOption) {
+                        // Apply pending changes to optionsArray
+                        pendingChanges.forEach(index => {
+                            if (index >= 0 && index < optionsArray.length) {
+                                optionsArray[index] = false;
+                            }
+                        });
+                        pendingChanges = []; // Clear pending changes
+                        updateOptionsCounter(); // Update the display
+
+                        if (currentQuestion < containers.length) {
+                            showQuestion(currentQuestion + 1);
+                        }
+                    }
+                });
             }
-        });
-        
-        prevBtn.disabled = questionNumber === 1;
-        currentQuestion = questionNumber;
-        updateProgressBar();
-    }
-
-    function updateProgressBar() {
-        const progressPercentage = (currentQuestion / quizData.length) * 100;
-        progressBar.style.width = `${progressPercentage}%`;
-    }
-
-    prevBtn.addEventListener('click', () => {
-        if (currentQuestion > 1) {
-            showQuestion(currentQuestion - 1);
-        }
-    });
-
-    nextBtn.addEventListener('click', () => {
-        // Apply any pending changes if there are any
-        if (pendingChanges) {
-            pendingChanges.forEach(index => {
-                optionsArray[index] = false;
-            });
-            pendingChanges = null;
-            updateOptionsCounter();
-        }
-        
-        // Simply move to next question if not at the end
-        if (currentQuestion < quizData.length) {
-            showQuestion(currentQuestion + 1);
-        }
-    });
-};
 
             function addFeedbackHandlers() {
                 document.querySelectorAll('input[type="radio"]').forEach(input => {
@@ -331,7 +301,7 @@
                             selectedFeedback.style.display = 'block';
                         }
 
-                        // Queue up the action for when Next is clicked
+                        // Store pending changes but don't apply them yet
                         const questionData = quizData.find(q => q.id === parseInt(container.dataset.question));
                         const selectedOptionData = questionData.options.find(opt => opt.id === this.value);
                         if (selectedOptionData && selectedOptionData.action) {
