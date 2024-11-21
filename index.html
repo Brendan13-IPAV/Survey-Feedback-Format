@@ -1,60 +1,6 @@
 <!DOCTYPE html>
 
-  // Quiz content
-        const quizData = [
-            {
-                id: 1,
-                title: "What is your primary objective?",
-                description: "To help us prioritize actions which align with your needs, we would like to know what your aim is.",
-                type: "radio",
-                options: [
-                    {
-                        id: "compensation",
-                        text: "Obtain financial compensation for infringement.",
-                        feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
-                        action: function() { 
-                            // Store which options to disable (indexes 0, 1, 2 for example)
-                            pendingChanges = [0, 1, 2];
-                        }
-                    },
-                    {
-                        id: "stop_infringement",
-                        text: "Prevent further infringement.",
-                        feedback: "No reduction of options, prioritizes effective prevention.",
-                        action: function() { 
-                            pendingChanges = null; // No changes needed
-                        }
-                    }
-                ]
-            },
-            {
-                id: 2,
-                title: "What is your primary objective?",
-                description: "To help us prioritize actions which align with your needs, we would like to know what your aim is.",
-                type: "radio",
-                options: [
-                    {
-                        id: "compensation",
-                        text: "Obtain financial compensation for infringement.",
-                        feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
-                        action: function() { 
-                            // Store which options to disable (indexes 0, 1, 2 for example)
-                            pendingChanges = [0, 1, 2];
-                        }
-                    },
-                    {
-                        id: "stop_infringement",
-                        text: "Prevent further infringement.",
-                        feedback: "No reduction of options, prioritizes effective prevention.",
-                        action: function() { 
-                            pendingChanges = null; // No changes needed
-                        }
-                    }
-                ]
-            },
-            // Add more questions here...
-        ];
-
+  
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -172,6 +118,61 @@
             <div id="progress-bar-inner" class="progress-bar-inner"></div>
         </div>
     </div>
+
+  // Quiz content
+        const quizData = [
+            {
+                id: 1,
+                title: "What is your primary objective?",
+                description: "To help us prioritize actions which align with your needs, we would like to know what your aim is.",
+                type: "radio",
+                options: [
+                    {
+                        id: "compensation",
+                        text: "Obtain financial compensation for infringement.",
+                        feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
+                        action: function() { 
+                            // Store which options to disable (indexes 0, 1, 2 for example)
+                            pendingChanges = [0, 1, 2];
+                        }
+                    },
+                    {
+                        id: "stop_infringement",
+                        text: "Prevent further infringement.",
+                        feedback: "No reduction of options, prioritizes effective prevention.",
+                        action: function() { 
+                            pendingChanges = null; // No changes needed
+                        }
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "What is your primary objective?",
+                description: "To help us prioritize actions which align with your needs, we would like to know what your aim is.",
+                type: "radio",
+                options: [
+                    {
+                        id: "compensation",
+                        text: "Obtain financial compensation for infringement.",
+                        feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
+                        action: function() { 
+                            // Store which options to disable (indexes 0, 1, 2 for example)
+                            pendingChanges = [0, 1, 2];
+                        }
+                    },
+                    {
+                        id: "stop_infringement",
+                        text: "Prevent further infringement.",
+                        feedback: "No reduction of options, prioritizes effective prevention.",
+                        action: function() { 
+                            pendingChanges = null; // No changes needed
+                        }
+                    }
+                ]
+            },
+            // Add more questions here...
+        ];
 
     <script>
         // Initialize array of 20 options (all true)
