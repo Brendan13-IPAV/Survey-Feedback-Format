@@ -12,6 +12,13 @@
             padding: 20px;
             background-color: #f5f5f5;
         }
+        .intro-container {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
         .question-container {
             background: white;
             padding: 20px;
@@ -22,6 +29,20 @@
         }
         .question-container.active {
             display: block;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-bar-inner {
+            height: 100%;
+            background: #007bff;
+            width: 0%;
+            transition: width 0.3s ease;
         }
         .question-title {
             font-size: 1.2em;
@@ -66,13 +87,6 @@
             background-color: #007bff;
             color: white;
         }
-        .submit-btn {
-            background-color: #28a745;
-            color: white;
-        }
-        .answered .submit-btn {
-            background-color: #007bff;
-        }
         button:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
@@ -80,117 +94,47 @@
     </style>
 </head>
 <body>
-    <div id="quiz-container"></div>
+    <div id="intro-container" class="intro-container">
+        <h1>Welcome to the Interactive Quiz</h1>
+        <p>This quiz will help guide you through some important questions to determine the best actions for your needs.</p>
+        <button id="start-btn" class="next-btn">Start</button>
+    </div>
+
+    <div id="quiz-container" style="display:none;">
+        <div class="progress-bar">
+            <div id="progress-bar-inner" class="progress-bar-inner"></div>
+        </div>
+    </div>
 
     <script>
+        // Variables for tracking options remaining and options excluded
+        let optionsRemaining = 20;
+        let optionsExcluded = 0;
+
         // Quiz content - EDIT THIS SECTION TO MODIFY QUESTIONS
-const quizData = [
-                  {
+        const quizData = [
+            {
                 id: 1,
                 title: "What is your primary objective?",
-                description: "To help us prioritise actions which align with your needs, we would like to know what your aim is. Please select your MAIN aim, noting that multiple aims may be achieved (to varying degrees) by pursuing suggested actions.",
-                type: "radio", // single choice
+                description: "To help us prioritize actions which align with your needs, we would like to know what your aim is.",
+                type: "radio",
                 options: [
                     {
                         id: "compensation",
                         text: "Obtain financial compensation for infringement.",
-                        feedback: "Making this choice will prioritise formal proceedings which can lead to financial compensation, and will deprioritise faster and cheaper solutions."
-                        //It can be quite expensive and slow to obtain compensation, be clear that this is imperative to resolving your situation.
+                        feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
+                        action: function() { optionsRemaining -= 3; }
                     },
                     {
-                        id: "stop infringement",
+                        id: "stop_infringement",
                         text: "Prevent further infringement.",
-                        feedback: "Making this choice will not reduce the number of options but will prioritise actions which most effectively (cheaply and quickly) reduce future infringement."
-                    },
-                    {
-                        id: "respond",
-                        text: "Respond to claims of infringement and continue to operate",
-                        feedback: "Making this choice will prioritise deescalating actions which help clarify and resolve issues involving rights."
-                    }
-                        ]
-                },
-                      {
-                id: 2,
-                title: "Which country is the IP registered in?",
-                description: "IP exists globally, but is made up of a patchwork of cooperating systems. Some actions are only available with rights registered in particular jurisdictions. Select all options which apply.",
-                type: "checkbox", // multiple choice
-                options: [
-                    {
-                        id: "AustIP",
-                        text: "Registered with IP Australia (or pending registration with IP Australia)",
-                        feedback: "Making this choice has prioritised actions which can be applied within Australia. There are 15 remaining options to consider."
-                    },
-                    {
-                        id: "InternationIP",
-                        text: "Registered with foreign IP offices (or pending registration) (e.g., US patents, EU trademarks)",
-                        feedback: "Selecting this means 3 possible options have been excluded as these options require the IP to be registered in Australia; there are 12 remaining options to consider."
-                    },
-                    {
-                        id: "NoRegisteredIP",
-                        text: "The IP is not formally registered.",
-                        feedback: "There are Common Law rights for IP in some situations, but with no registered IP rights, 9 possible options are not available to consider. There are 6 remaining options to consider."
-                    }
-                    ]
-                    },
-                    {
-                id: 3,
-                title: "Do you contest the validity of the intellectual property right in question?",
-                description: "Validity refers to whether the IP right was granted correctly and is legally enforceable. This could relate to patents, trademarks, copyrights, or other forms of IP protection. Some disputes are about both the validity of a right, and infringement on a right.",
-                type: "radio", // single choice
-                options: [
-                    {
-                        id: "Yes",
-                        text: "Yes, I believe the right should not be granted.",
-                        feedback: "We will ask further questions about the reasons you have for disputing the validity of a right."
-                    },
-                    {
-                        id: "No",
-                        text: "No, validity is not at issue",
-                        feedback: "By choosing this, 3 possible options have been ruled out based on this information; there are 16 remaining options you could decide to pursue."
+                        feedback: "No reduction of options, prioritizes effective prevention.",
+                        action: function() { }
                     }
                 ]
             },
-            {
-                id: 4,
-                title: "Have you identified any IP related issues from someone selling on an online marketplace? (e.g. Amazon, Etsy, Facebook)",
-                description: "Some online marketplaces have ways to alert them to infringement happening on their platform, which can be used in conjunction with other enforcement strategies.",
-                type: "radio", // single choice
-                options: [
-                    {
-                        id: "Yes",
-                        text: "Yes",
-                        feedback: "The suggestions will include 'take-down' requests on private platforms for you to consider."
-                    },
-                    {
-                        id: "No",
-                        text: "No",
-                        feedback: "1 possible option has been ruled out based on this information; there are 15 remaining options you could decide to pursue."
-                    }
-                    ]
-            },
-            {
-                id: 5,
-                title: "Would you require confidentiality when resolving this issue?",
-                description: "Businesses sometimes need to keep certain actions confidential to protect intellectual property, maintain a competitive advantage, or manage public perception effectively. This can involve safeguarding trade secrets, pending patents, or sensitive business information that, if prematurely disclosed, could harm the company's interests.",
-                type: "radio", // single choice
-                options: [
-                    {
-                        id: "Yes",
-                        text: "Yes",
-                        feedback: "By requiring confidentiality, a number of possible options will be deprioritised as their processes are public and could reveal confidential information."
-                    },
-                    {
-                        id: "No",
-                        text: "No",
-                        feedback: "By selecting this option, a wide number of possible actions can be considered."
-                    }
-                    ]
-            }
-
-
-            // Add more questions here following the same format
+            // Add more questions here...
         ];
-
 
         // Generate quiz HTML
         function generateQuiz() {
@@ -222,80 +166,73 @@ const quizData = [
             container.innerHTML += `
                 <div class="navigation">
                     <button class="prev-btn" disabled>Previous</button>
-                    <button class="submit-btn">Submit</button>
+                    <button class="next-btn">Next</button>
                 </div>
             `;
         }
 
         // Initialize quiz
         document.addEventListener('DOMContentLoaded', function() {
-            generateQuiz();
+            const introContainer = document.getElementById('intro-container');
+            const quizContainer = document.getElementById('quiz-container');
+            const startBtn = document.getElementById('start-btn');
+            const progressBar = document.getElementById('progress-bar-inner');
             
-            const containers = document.querySelectorAll('.question-container');
-            const prevBtn = document.querySelector('.prev-btn');
-            const submitBtn = document.querySelector('.submit-btn');
-            let currentQuestion = 1;
-
-            function showQuestion(questionNumber) {
-                containers.forEach(container => {
-                    container.classList.remove('active');
-                    if (container.dataset.question == questionNumber) {
-                        container.classList.add('active');
-                    }
-                });
-                
-                prevBtn.disabled = questionNumber === 1;
-                currentQuestion = questionNumber;
-            }
-
-            function updateFeedback(container) {
-                const feedbacks = container.querySelectorAll('.feedback');
-                feedbacks.forEach(feedback => feedback.style.display = 'none');
-
-                const inputs = container.querySelectorAll('input:checked');
-                inputs.forEach(input => {
-                    const feedbackElement = container.querySelector(`.feedback[data-feedback="${input.value}"]`);
-                    if (feedbackElement) {
-                        feedbackElement.style.display = 'block';
-                    }
-                });
-            }
-
-            // Handle input changes
-            document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
-                input.addEventListener('change', function() {
-                    const container = this.closest('.question-container');
-                    updateFeedback(container);
-                    container.classList.add('answered');
-                });
+            startBtn.addEventListener('click', function() {
+                introContainer.style.display = 'none';
+                quizContainer.style.display = 'block';
+                generateQuiz();
+                addNavigationHandlers();
             });
 
-            // Navigation buttons
-            prevBtn.addEventListener('click', () => {
-                if (currentQuestion > 1) {
-                    showQuestion(currentQuestion - 1);
+            function addNavigationHandlers() {
+                const containers = document.querySelectorAll('.question-container');
+                const prevBtn = document.querySelector('.prev-btn');
+                const nextBtn = document.querySelector('.next-btn');
+                let currentQuestion = 1;
+
+                function showQuestion(questionNumber) {
+                    containers.forEach(container => {
+                        container.classList.remove('active');
+                        if (container.dataset.question == questionNumber) {
+                            container.classList.add('active');
+                        }
+                    });
+                    
+                    prevBtn.disabled = questionNumber === 1;
+                    currentQuestion = questionNumber;
+                    updateProgressBar();
                 }
-            });
 
-            submitBtn.addEventListener('click', function() {
-                const currentContainer = document.querySelector(`.question-container[data-question="${currentQuestion}"]`);
-                const isAnswered = currentContainer.querySelector('input:checked');
-                
-                if (isAnswered) {
-                    if (submitBtn.textContent === 'Submit') {
-                        submitBtn.textContent = 'Next';
-                        submitBtn.classList.add('next-btn');
-                        submitBtn.classList.remove('submit-btn');
-                    } else {
+                function updateProgressBar() {
+                    const progressPercentage = (currentQuestion / quizData.length) * 100;
+                    progressBar.style.width = `${progressPercentage}%`;
+                }
+
+                prevBtn.addEventListener('click', () => {
+                    if (currentQuestion > 1) {
+                        showQuestion(currentQuestion - 1);
+                    }
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    const currentContainer = document.querySelector(`.question-container[data-question="${currentQuestion}"]`);
+                    const selectedOption = currentContainer.querySelector('input:checked');
+                    
+                    if (selectedOption) {
+                        const selectedFeedback = currentContainer.querySelector(`.feedback[data-feedback="${selectedOption.value}"]`);
+                        selectedFeedback.style.display = 'block';
+
+                        // Apply action related to the selected option
+                        const optionData = quizData[currentQuestion - 1].options.find(opt => opt.id === selectedOption.value);
+                        if (optionData.action) optionData.action();
+
                         if (currentQuestion < containers.length) {
                             showQuestion(currentQuestion + 1);
-                            submitBtn.textContent = 'Submit';
-                            submitBtn.classList.remove('next-btn');
-                            submitBtn.classList.add('submit-btn');
                         }
                     }
-                }
-            });
+                });
+            }
         });
     </script>
 </body>
