@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Quiz</title>
     <style>
-        /* All previous styles remain the same */
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
@@ -45,33 +44,13 @@
             width: 0%;
             transition: width 0.3s ease;
         }
-        .question-title {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .question-description {
-            color: #666;
-            margin-bottom: 15px;
-            font-size: 0.9em;
-        }
-        .options-container {
-            margin-bottom: 15px;
-        }
-        .option {
-            margin: 10px 0;
-        }
-        .feedback {
-            margin-top: 15px;
-            padding: 10px;
-            border-left: 4px solid #007bff;
+        .options-counter {
             background: #f8f9fa;
-            display: none;
-        }
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #666;
         }
         button {
             padding: 10px 20px;
@@ -92,22 +71,29 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
-        .options-counter {
-            background: #f8f9fa;
+        .feedback {
+            margin-top: 15px;
             padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            font-size: 0.9em;
-            color: #666;
+            border-left: 4px solid #007bff;
+            background: #f8f9fa;
+            display: none;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .option {
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
     <div id="intro-container" class="intro-container">
-        <h1>Welcome to the Interactive Quiz</h1>
-        <p>This quiz will help guide you through some important questions to determine the best actions for your needs.</p>
+        <h1>Interactive Legal Options Quiz</h1>
+        <p>This quiz will help determine the best legal actions for your situation.</p>
         <div id="intro-options-counter" class="options-counter">There are 20 remaining options.</div>
-        <button id="start-btn" class="next-btn">Start</button>
+        <button id="start-btn" class="next-btn">Start Quiz</button>
     </div>
 
     <div id="quiz-container" style="display:none;">
@@ -120,75 +106,82 @@
     <script>
         // Initialize options array with 20 true values
         let optionsArray = new Array(20).fill(true);
-        let pendingChanges = []; // Array to store indices that need to be changed
+        let pendingChanges = [];
 
-        function countRemainingOptions() {
-            return optionsArray.filter(option => option === true).length;
-        }
-
-        function updateOptionsCounter() {
-            const remaining = countRemainingOptions();
-            const introCounter = document.getElementById('intro-options-counter');
-            const quizCounter = document.getElementById('quiz-options-counter');
-            const counterText = `There are ${remaining} remaining options.`;
-            if (introCounter) introCounter.textContent = counterText;
-            if (quizCounter) quizCounter.textContent = counterText;
-        }
-
-        // Quiz content
         const quizData = [
             {
                 id: 1,
                 title: "What is your primary objective?",
-                description: "To help us prioritize actions which align with your needs, we would like to know what your aim is.",
+                description: "This will help us determine the most appropriate legal strategy.",
                 type: "radio",
                 options: [
                     {
                         id: "compensation",
-                        text: "Obtain financial compensation for infringement.",
-                        feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
-                        action: function() { 
-                            // Store indices to be changed when Next is clicked
-                            pendingChanges = [0, 1, 2]; // Example: will set first three options to false
-                        }
+                        text: "Obtain financial compensation",
+                        feedback: "This path may reduce some quick resolution options.",
+                        action: () => [0, 1, 2] // Will disable first 3 options
                     },
                     {
-                        id: "stop_infringement",
-                        text: "Prevent further infringement.",
-                        feedback: "No reduction of options, prioritizes effective prevention.",
-                        action: function() { 
-                            pendingChanges = []; // No changes needed
-                        }
+                        id: "prevention",
+                        text: "Prevent future incidents",
+                        feedback: "This keeps most options available.",
+                        action: () => [] // No options disabled
                     }
                 ]
             },
-                      {
+            {
                 id: 2,
-                title: "What is your primary objective?",
-                description: "To help us prioritize actions which align with your needs, we would like to know what your aim is.",
+                title: "What is your time preference?",
+                description: "Different approaches require different time commitments.",
                 type: "radio",
                 options: [
                     {
-                        id: "compensation",
-                        text: "Obtain financial compensation for infringement.",
-                        feedback: "Making this choice prioritizes formal proceedings, reducing faster options.",
-                        action: function() { 
-                            // Store indices to be changed when Next is clicked
-                            pendingChanges = [0, 1, 2]; // Example: will set first three options to false
-                        }
+                        id: "quick",
+                        text: "Need quick resolution",
+                        feedback: "This will remove longer-term legal options.",
+                        action: () => [15, 16, 17, 18, 19] // Disables last 5 options
                     },
                     {
-                        id: "stop_infringement",
-                        text: "Prevent further infringement.",
-                        feedback: "No reduction of options, prioritizes effective prevention.",
-                        action: function() { 
-                            pendingChanges = []; // No changes needed
-                        }
+                        id: "thorough",
+                        text: "Willing to take time for thorough process",
+                        feedback: "This keeps all timing options available.",
+                        action: () => [] // No options disabled
                     }
                 ]
             },
-            // Add more questions here...
+            {
+                id: 3,
+                title: "What is your budget consideration?",
+                description: "Different legal approaches have different cost implications.",
+                type: "radio",
+                options: [
+                    {
+                        id: "limited",
+                        text: "Limited budget",
+                        feedback: "This will focus on cost-effective options.",
+                        action: () => [7, 8, 9, 10] // Disables middle range options
+                    },
+                    {
+                        id: "flexible",
+                        text: "Flexible budget",
+                        feedback: "This keeps all budget options available.",
+                        action: () => [] // No options disabled
+                    }
+                ]
+            }
         ];
+
+        function countRemainingOptions() {
+            return optionsArray.filter(x => x).length;
+        }
+
+        function updateOptionsCounter() {
+            const remaining = countRemainingOptions();
+            const counterText = `There are ${remaining} remaining options.`;
+            document.querySelectorAll('.options-counter').forEach(counter => {
+                counter.textContent = counterText;
+            });
+        }
 
         function generateQuiz() {
             const container = document.getElementById('quiz-container');
@@ -196,8 +189,8 @@
             quizData.forEach((question, index) => {
                 const questionHTML = `
                     <div class="question-container ${index === 0 ? 'active' : ''}" data-question="${question.id}">
-                        <div class="question-title">${question.title}</div>
-                        <div class="question-description">${question.description}</div>
+                        <h2>${question.title}</h2>
+                        <p>${question.description}</p>
                         <div class="options-container">
                             ${question.options.map(option => `
                                 <div class="option">
@@ -220,96 +213,95 @@
                     <button class="next-btn">Next</button>
                 </div>
             `;
+
+            attachEventListeners();
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const introContainer = document.getElementById('intro-container');
-            const quizContainer = document.getElementById('quiz-container');
-            const startBtn = document.getElementById('start-btn');
-            const progressBar = document.getElementById('progress-bar-inner');
-            
-            updateOptionsCounter();
-            
-            startBtn.addEventListener('click', function() {
-                introContainer.style.display = 'none';
-                quizContainer.style.display = 'block';
-                generateQuiz();
-                addNavigationHandlers();
-                addFeedbackHandlers();
+        function attachEventListeners() {
+            const containers = document.querySelectorAll('.question-container');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            let currentQuestion = 1;
+
+            function showQuestion(questionNumber) {
+                containers.forEach(container => {
+                    container.classList.remove('active');
+                    if (container.dataset.question == questionNumber) {
+                        container.classList.add('active');
+                    }
+                });
+                
+                prevBtn.disabled = questionNumber === 1;
+                nextBtn.textContent = questionNumber === containers.length ? "Finish" : "Next";
+                updateProgressBar(questionNumber, containers.length);
+            }
+
+            function updateProgressBar(current, total) {
+                const progressBar = document.getElementById('progress-bar-inner');
+                const progress = (current / total) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            // Add change listeners to all radio inputs
+            document.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    const container = this.closest('.question-container');
+                    const questionId = parseInt(container.dataset.question);
+                    const questionData = quizData.find(q => q.id === questionId);
+                    const selectedOption = questionData.options.find(opt => opt.id === this.value);
+                    
+                    // Show feedback
+                    container.querySelectorAll('.feedback').forEach(f => f.style.display = 'none');
+                    const feedback = container.querySelector(`.feedback[data-feedback="${this.value}"]`);
+                    if (feedback) feedback.style.display = 'block';
+                    
+                    // Store pending changes
+                    pendingChanges = selectedOption.action();
+                });
             });
 
-            function addNavigationHandlers() {
-                const containers = document.querySelectorAll('.question-container');
-                const prevBtn = document.querySelector('.prev-btn');
-                const nextBtn = document.querySelector('.next-btn');
-                let currentQuestion = 1;
+            prevBtn.addEventListener('click', () => {
+                if (currentQuestion > 1) {
+                    currentQuestion--;
+                    showQuestion(currentQuestion);
+                }
+            });
 
-                function showQuestion(questionNumber) {
-                    containers.forEach(container => {
-                        container.classList.remove('active');
-                        if (container.dataset.question == questionNumber) {
-                            container.classList.add('active');
+            nextBtn.addEventListener('click', () => {
+                const currentContainer = document.querySelector(`.question-container[data-question="${currentQuestion}"]`);
+                const selectedOption = currentContainer.querySelector('input:checked');
+                
+                if (selectedOption) {
+                    // Apply pending changes
+                    pendingChanges.forEach(index => {
+                        if (index >= 0 && index < optionsArray.length) {
+                            optionsArray[index] = false;
                         }
                     });
-                    
-                    prevBtn.disabled = questionNumber === 1;
-                    currentQuestion = questionNumber;
-                    updateProgressBar();
-                }
+                    pendingChanges = [];
+                    updateOptionsCounter();
 
-                function updateProgressBar() {
-                    const progressPercentage = (currentQuestion / quizData.length) * 100;
-                    progressBar.style.width = `${progressPercentage}%`;
-                }
-
-                prevBtn.addEventListener('click', () => {
-                    if (currentQuestion > 1) {
-                        showQuestion(currentQuestion - 1);
+                    if (currentQuestion < containers.length) {
+                        currentQuestion++;
+                        showQuestion(currentQuestion);
+                    } else {
+                        // Quiz finished
+                        alert('Quiz completed! Your remaining options will be shown.');
                     }
-                });
+                }
+            });
+        }
 
-                nextBtn.addEventListener('click', () => {
-                    const currentContainer = document.querySelector(`.question-container[data-question="${currentQuestion}"]`);
-                    const selectedOption = currentContainer.querySelector('input:checked');
-                    
-                    if (selectedOption) {
-                        // Apply pending changes to optionsArray
-                        pendingChanges.forEach(index => {
-                            if (index >= 0 && index < optionsArray.length) {
-                                optionsArray[index] = false;
-                            }
-                        });
-                        pendingChanges = []; // Clear pending changes
-                        updateOptionsCounter(); // Update the display
-
-                        if (currentQuestion < containers.length) {
-                            showQuestion(currentQuestion + 1);
-                        }
-                    }
-                });
-            }
-
-            function addFeedbackHandlers() {
-                document.querySelectorAll('input[type="radio"]').forEach(input => {
-                    input.addEventListener('change', function() {
-                        const container = this.closest('.question-container');
-                        const feedbacks = container.querySelectorAll('.feedback');
-                        feedbacks.forEach(feedback => feedback.style.display = 'none');
-
-                        const selectedFeedback = container.querySelector(`.feedback[data-feedback="${this.value}"]`);
-                        if (selectedFeedback) {
-                            selectedFeedback.style.display = 'block';
-                        }
-
-                        // Store pending changes but don't apply them yet
-                        const questionData = quizData.find(q => q.id === parseInt(container.dataset.question));
-                        const selectedOptionData = questionData.options.find(opt => opt.id === this.value);
-                        if (selectedOptionData && selectedOptionData.action) {
-                            selectedOptionData.action();
-                        }
-                    });
-                });
-            }
+        // Initialize quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            const startBtn = document.getElementById('start-btn');
+            startBtn.addEventListener('click', function() {
+                document.getElementById('intro-container').style.display = 'none';
+                document.getElementById('quiz-container').style.display = 'block';
+                generateQuiz();
+            });
+            
+            updateOptionsCounter();
         });
     </script>
 </body>
