@@ -183,6 +183,7 @@
                 quizContainer.style.display = 'block';
                 generateQuiz();
                 addNavigationHandlers();
+                addFeedbackHandlers();
             });
 
             function addNavigationHandlers() {
@@ -220,17 +221,25 @@
                     const selectedOption = currentContainer.querySelector('input:checked');
                     
                     if (selectedOption) {
-                        const selectedFeedback = currentContainer.querySelector(`.feedback[data-feedback="${selectedOption.value}"]`);
-                        selectedFeedback.style.display = 'block';
-
-                        // Apply action related to the selected option
-                        const optionData = quizData[currentQuestion - 1].options.find(opt => opt.id === selectedOption.value);
-                        if (optionData.action) optionData.action();
-
                         if (currentQuestion < containers.length) {
                             showQuestion(currentQuestion + 1);
                         }
                     }
+                });
+            }
+
+            function addFeedbackHandlers() {
+                document.querySelectorAll('input[type="radio"]').forEach(input => {
+                    input.addEventListener('change', function() {
+                        const container = this.closest('.question-container');
+                        const feedbacks = container.querySelectorAll('.feedback');
+                        feedbacks.forEach(feedback => feedback.style.display = 'none');
+
+                        const selectedFeedback = container.querySelector(`.feedback[data-feedback="${this.value}"]`);
+                        if (selectedFeedback) {
+                            selectedFeedback.style.display = 'block';
+                        }
+                    });
                 });
             }
         });
