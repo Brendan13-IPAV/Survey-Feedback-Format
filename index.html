@@ -71,56 +71,70 @@
             {
                 id: 1,
                 title: "What is your primary objective?",
-                description: "This will help us determine the most appropriate legal strategy.",
+                description: "To help us prioritise actions which align with your needs, we would like to know what your aim is. Please select your MAIN aim, noting that multiple aims may be achieved (to varying degrees) by pursuing suggested actions.",
                 options: [
                     {
                         id: "compensation",
                         text: "Obtain financial compensation",
-                        feedback: "This path may reduce some quick resolution options.",
+                        feedback: "Making this choice will prioritise formal proceedings which can lead to financial compensation, and will deprioritise faster and cheaper solutions.",
                         action: () => [0, 1, 2]
                     },
                     {
                         id: "prevention",
                         text: "Prevent future incidents",
-                        feedback: "This keeps most options available.",
+                        feedback: "Making this choice will not reduce the number of options but will prioritise actions which most effectively (cheaply and quickly) reduce future infringement.",
+                        action: () => []
+                    },
+                      {
+                        id: "respond",
+                        text: "Respond to claims of infringement and continue to operate",
+                        feedback: "Making this choice will prioritise deescalating actions which help clarify and resolve issues involving rights.",
                         action: () => []
                     }
+
                 ]
             },
             {
                 id: 2,
-                title: "What is your time preference?",
-                description: "Different approaches require different time commitments.",
+                title: "Which country is the IP registered in?",
+                description: "IP exists globally, but is made up of a patchwork of cooperating systems. Some actions are only available with rights registered in particular jurisdictions. Select all options which apply.",
                 options: [
                     {
-                        id: "quick",
-                        text: "Need quick resolution",
-                        feedback: "This will remove longer-term legal options.",
-                        action: () => [15, 16, 17, 18, 19]
+                        id: "AustIP",
+                        text: "Registered with IP Australia (or pending registration with IP Australia)",
+                        feedback: "Making this choice will prioritise actions which can be applied within Australia.",
+                        action: () => []
                     },
                     {
-                        id: "thorough",
-                        text: "Willing to take time for thorough process",
-                        feedback: "This keeps all timing options available.",
-                        action: () => []
+                        id: "InternationIP",
+                        text: "Registered with foreign IP offices (or pending registration) (e.g., US patents, EU trademarks)",
+                        feedback: "Selecting this means 3 possible options have been excluded as these options require the IP to be registered in Australia.",
+                        action: () => [0,4,6]
+                    },
+                     {
+                        id: "NoRegisteredIP",
+                        text: "The IP is not formally registered.",
+                        feedback: "There are Common Law rights for IP in some situations, but with no registered IP rights, 9 possible options are not available to consider.",
+                            action: () => [0,1,2,5,7,15, 16, 17, 18]
                     }
+
                 ]
             },
             {
                 id: 3,
-                title: "What is your budget consideration?",
-                description: "Different legal approaches have different cost implications.",
+                title: "Do you think the intellectual property in dispute should not have been registered?",
+                description: "Registrability refers to whether an IP right is robust enough to meet all the criteria for registration with IP Australia or other national IP offices. The registration of an IP right can be challenged when it is deemed to be unsound to meet the legal requirements set out in relevant legislations.",
                 options: [
                     {
-                        id: "limited",
-                        text: "Limited budget",
-                        feedback: "This will focus on cost-effective options.",
-                        action: () => [7, 8, 9, 10]
+                        id: "yes",
+                        text: "Yes, I believe the right should not be granted.",
+                        feedback: "We will ask further questions about the reasons why you think the IP right should not be registered.",
+                        action: () => []
                     },
                     {
-                        id: "flexible",
-                        text: "Flexible budget",
-                        feedback: "This keeps all budget options available.",
+                        id: "no",
+                        text: "No, validity is not at issue",
+                        feedback: "This means that you think the IP right in question is robust and registrable, and that there is no problem with the IP itself.",
                         action: () => []
                     }
                 ]
