@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Quiz</title>
     <style>
+        /* All previous styles remain the same */
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
@@ -12,79 +13,41 @@
             padding: 20px;
             background-color: #f5f5f5;
         }
-        .intro-container {
+        .intro-container, .question-container {
             background: white;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .question-container {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: none;
-        }
-        .question-container.active {
-            display: block;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #e0e0e0;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        .progress-bar-inner {
-            height: 100%;
-            background: #007bff;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
+        .question-container { display: none; }
+        .question-container.active { display: block; }
         .options-counter {
             background: #f8f9fa;
             padding: 10px;
             margin-bottom: 15px;
             border-radius: 4px;
-            font-size: 0.9em;
-            color: #666;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        .prev-btn {
-            background-color: #6c757d;
-            color: white;
-        }
-        .next-btn {
-            background-color: #007bff;
-            color: white;
-        }
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        .feedback {
-            margin-top: 15px;
-            padding: 10px;
-            border-left: 4px solid #007bff;
-            background: #f8f9fa;
-            display: none;
         }
         .navigation {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
         }
-        .option {
-            margin: 10px 0;
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .prev-btn { background-color: #6c757d; color: white; }
+        .next-btn { background-color: #007bff; color: white; }
+        button:disabled { background-color: #cccccc; }
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background: #f8f9fa;
+            display: none;
         }
     </style>
 </head>
@@ -96,36 +59,31 @@
         <button id="start-btn" class="next-btn">Start Quiz</button>
     </div>
 
-    <div id="quiz-container" style="display:none;">
-        <div id="quiz-options-counter" class="options-counter">There are 20 remaining options.</div>
-        <div class="progress-bar">
-            <div id="progress-bar-inner" class="progress-bar-inner"></div>
-        </div>
-    </div>
+    <div id="quiz-container" style="display:none;"></div>
 
     <script>
-        // Initialize options array with 20 true values
+        // Initialize options array
         let optionsArray = new Array(20).fill(true);
         let pendingChanges = [];
+        let currentQuestion = 1;
 
         const quizData = [
             {
                 id: 1,
                 title: "What is your primary objective?",
                 description: "This will help us determine the most appropriate legal strategy.",
-                type: "radio",
                 options: [
                     {
                         id: "compensation",
                         text: "Obtain financial compensation",
                         feedback: "This path may reduce some quick resolution options.",
-                        action: () => [0, 1, 2] // Will disable first 3 options
+                        action: () => [0, 1, 2]
                     },
                     {
                         id: "prevention",
                         text: "Prevent future incidents",
                         feedback: "This keeps most options available.",
-                        action: () => [] // No options disabled
+                        action: () => []
                     }
                 ]
             },
@@ -133,19 +91,18 @@
                 id: 2,
                 title: "What is your time preference?",
                 description: "Different approaches require different time commitments.",
-                type: "radio",
                 options: [
                     {
                         id: "quick",
                         text: "Need quick resolution",
                         feedback: "This will remove longer-term legal options.",
-                        action: () => [15, 16, 17, 18, 19] // Disables last 5 options
+                        action: () => [15, 16, 17, 18, 19]
                     },
                     {
                         id: "thorough",
                         text: "Willing to take time for thorough process",
                         feedback: "This keeps all timing options available.",
-                        action: () => [] // No options disabled
+                        action: () => []
                     }
                 ]
             },
@@ -153,48 +110,47 @@
                 id: 3,
                 title: "What is your budget consideration?",
                 description: "Different legal approaches have different cost implications.",
-                type: "radio",
                 options: [
                     {
                         id: "limited",
                         text: "Limited budget",
                         feedback: "This will focus on cost-effective options.",
-                        action: () => [7, 8, 9, 10] // Disables middle range options
+                        action: () => [7, 8, 9, 10]
                     },
                     {
                         id: "flexible",
                         text: "Flexible budget",
                         feedback: "This keeps all budget options available.",
-                        action: () => [] // No options disabled
+                        action: () => []
                     }
                 ]
             }
         ];
 
-        function countRemainingOptions() {
-            return optionsArray.filter(x => x).length;
-        }
-
         function updateOptionsCounter() {
-            const remaining = countRemainingOptions();
+            const remaining = optionsArray.filter(x => x).length;
             const counterText = `There are ${remaining} remaining options.`;
             document.querySelectorAll('.options-counter').forEach(counter => {
                 counter.textContent = counterText;
             });
         }
 
-        function generateQuiz() {
+        function createQuiz() {
             const container = document.getElementById('quiz-container');
             
+            // Add options counter
+            container.innerHTML = '<div id="quiz-options-counter" class="options-counter">There are 20 remaining options.</div>';
+            
+            // Add all questions
             quizData.forEach((question, index) => {
-                const questionHTML = `
+                container.innerHTML += `
                     <div class="question-container ${index === 0 ? 'active' : ''}" data-question="${question.id}">
                         <h2>${question.title}</h2>
                         <p>${question.description}</p>
                         <div class="options-container">
                             ${question.options.map(option => `
                                 <div class="option">
-                                    <input type="${question.type}" name="q${question.id}" value="${option.id}" id="q${question.id}-${option.id}">
+                                    <input type="radio" name="q${question.id}" value="${option.id}" id="q${question.id}-${option.id}">
                                     <label for="q${question.id}-${option.id}">${option.text}</label>
                                 </div>
                             `).join('')}
@@ -204,104 +160,78 @@
                         `).join('')}
                     </div>
                 `;
-                container.innerHTML += questionHTML;
             });
 
+            // Add navigation
             container.innerHTML += `
                 <div class="navigation">
-                    <button class="prev-btn" disabled>Previous</button>
-                    <button class="next-btn">Next</button>
+                    <button class="prev-btn" onclick="prevQuestion()" disabled>Previous</button>
+                    <button class="next-btn" onclick="nextQuestion()">Next</button>
                 </div>
             `;
 
-            attachEventListeners();
-        }
-
-        function attachEventListeners() {
-            const containers = document.querySelectorAll('.question-container');
-            const prevBtn = document.querySelector('.prev-btn');
-            const nextBtn = document.querySelector('.next-btn');
-            let currentQuestion = 1;
-
-            function showQuestion(questionNumber) {
-                containers.forEach(container => {
-                    container.classList.remove('active');
-                    if (container.dataset.question == questionNumber) {
-                        container.classList.add('active');
-                    }
-                });
-                
-                prevBtn.disabled = questionNumber === 1;
-                nextBtn.textContent = questionNumber === containers.length ? "Finish" : "Next";
-                updateProgressBar(questionNumber, containers.length);
-            }
-
-            function updateProgressBar(current, total) {
-                const progressBar = document.getElementById('progress-bar-inner');
-                const progress = (current / total) * 100;
-                progressBar.style.width = `${progress}%`;
-            }
-
-            // Add change listeners to all radio inputs
+            // Add radio button listeners
             document.querySelectorAll('input[type="radio"]').forEach(input => {
                 input.addEventListener('change', function() {
-                    const container = this.closest('.question-container');
-                    const questionId = parseInt(container.dataset.question);
-                    const questionData = quizData.find(q => q.id === questionId);
-                    const selectedOption = questionData.options.find(opt => opt.id === this.value);
-                    
                     // Show feedback
+                    const container = this.closest('.question-container');
                     container.querySelectorAll('.feedback').forEach(f => f.style.display = 'none');
-                    const feedback = container.querySelector(`.feedback[data-feedback="${this.value}"]`);
-                    if (feedback) feedback.style.display = 'block';
-                    
+                    container.querySelector(`.feedback[data-feedback="${this.value}"]`).style.display = 'block';
+
                     // Store pending changes
+                    const questionData = quizData.find(q => q.id === parseInt(container.dataset.question));
+                    const selectedOption = questionData.options.find(opt => opt.id === this.value);
                     pendingChanges = selectedOption.action();
                 });
             });
+        }
 
-            prevBtn.addEventListener('click', () => {
-                if (currentQuestion > 1) {
-                    currentQuestion--;
+        function showQuestion(number) {
+            document.querySelectorAll('.question-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.querySelector(`.question-container[data-question="${number}"]`).classList.add('active');
+            
+            // Update buttons
+            document.querySelector('.prev-btn').disabled = number === 1;
+            document.querySelector('.next-btn').textContent = number === quizData.length ? "Finish" : "Next";
+        }
+
+        function nextQuestion() {
+            const currentContainer = document.querySelector('.question-container.active');
+            const selectedOption = currentContainer.querySelector('input:checked');
+            
+            if (selectedOption) {
+                // Apply pending changes to options array
+                pendingChanges.forEach(index => {
+                    optionsArray[index] = false;
+                });
+                pendingChanges = [];
+                updateOptionsCounter();
+
+                if (currentQuestion < quizData.length) {
+                    currentQuestion++;
                     showQuestion(currentQuestion);
+                } else {
+                    alert('Quiz completed!');
                 }
-            });
+            } else {
+                alert('Please select an option before proceeding.');
+            }
+        }
 
-            nextBtn.addEventListener('click', () => {
-                const currentContainer = document.querySelector(`.question-container[data-question="${currentQuestion}"]`);
-                const selectedOption = currentContainer.querySelector('input:checked');
-                
-                if (selectedOption) {
-                    // Apply pending changes
-                    pendingChanges.forEach(index => {
-                        if (index >= 0 && index < optionsArray.length) {
-                            optionsArray[index] = false;
-                        }
-                    });
-                    pendingChanges = [];
-                    updateOptionsCounter();
-
-                    if (currentQuestion < containers.length) {
-                        currentQuestion++;
-                        showQuestion(currentQuestion);
-                    } else {
-                        // Quiz finished
-                        alert('Quiz completed! Your remaining options will be shown.');
-                    }
-                }
-            });
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
         }
 
         // Initialize quiz
-        document.addEventListener('DOMContentLoaded', function() {
-            const startBtn = document.getElementById('start-btn');
-            startBtn.addEventListener('click', function() {
-                document.getElementById('intro-container').style.display = 'none';
-                document.getElementById('quiz-container').style.display = 'block';
-                generateQuiz();
-            });
-            
-            updateOptionsCounter();
+        document.getElementById('start-btn').addEventListener('click', function() {
+            document.getElementById('intro-container').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            createQuiz();
         });
     </script>
 </body>
